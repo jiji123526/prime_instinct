@@ -14,16 +14,18 @@ During the 2026 World Cup, a tiny nation making a historic run had no watch hist
 
 ## How it works
 
-Betting markets are a real-time, crowd-sourced probability sensor. When something extraordinary happens, the odds move within seconds, faster than trending or social signals. The agent watches that movement and, when the market signals a moment worth interrupting for, emits a scored, ready-to-send notification decision.
+Betting markets are a real-time, crowd-sourced probability sensor. When something extraordinary happens, the odds move within seconds, faster than trending or social signals. The agent watches that movement with **deterministic, rule-based scoring**, and when the market signals a moment worth interrupting for, emits a scored, ready-to-send notification decision.
 
 ```
 External feeds                 This agent                           Downstream
 ───────────────                ──────────                           ──────────
 odds stream (WebSocket)  ──▶  ingest ─ store ─ gate ─ score ─ decide  ──▶  Prime Video
-                              (emits a notify/don't decision + payload)    notification pipeline
+                              (rule-based score → notify/don't + payload)   notification pipeline
 ```
 
-Deterministic signal math lives in the data layer (cheap, auditable, always-on). The LLM judgment runs **only** on the moments that pass the gate.
+The scoring path is **entirely rule-based**: deterministic signal math in the data layer, a cost-based threshold at the decision step. No LLM sits in the notify/don't decision, keeping it cheap, auditable, always-on, and free of judge bias or hallucination.
+
+The LLM is **not** part of the scoring decision. It runs **after** a user interacts with a notification, as a context layer that explains *why* the moment matters (see [Context layer](#context-layer-post-interaction-llm)).
 
 ## Signals
 
@@ -37,8 +39,13 @@ The prototype reads three signals from a single odds feed:
 
 A fourth signal, **reverse line movement** (odds moving against the public, i.e. informed "smart" money), is the strongest signal conceptually but needs a second betting-splits feed. Splits coverage is sport-dependent (available for soccer, football, basketball, etc.; not for F1), so RLM is deferred until a splits feed is confirmed for the target sport.
 
+## Scoring: how signals become a score
+
+Scoring is a **deterministic function of the signals**, not a learned or LLM judgment. The moment is measured primarily by **velocity** (the "something is happening now" signal), weighted by **improbability** (how big a deal it is) and **volume** (how much the market cares). The result is a single calibrated score. Because the math is fixed and inspectable, every notification can be traced back to the exact signal values that produced it.
+
 ## Scope (v1)
 
+- Scoring and decision are **100% rule-based** — no LLM in the notify/don't path.
 - Emits a **binary** decision: `INTERRUPT` / `DON'T`, plus a confidence score.
 - Reads the **event, not the viewer**, there is no viewer profiling.
 - Prime Video's existing notification pipeline handles delivery and audience targeting; this agent does not own device delivery.
@@ -49,10 +56,21 @@ A fourth signal, **reverse line movement** (odds moving against the public, i.e.
 |---|---|---|
 | 1 | **Ingestion** | Hold the stream open + reconciliation poll; lose nothing, duplicate nothing |
 | 2 | **Store + derived columns** | Persist every tick with timestamp; compute deterministic signal columns |
-| 3 | **Threshold gate** | Cheap filter: wake the agent only when a derived column crosses a bound |
-| 4 | **LLM scoring** | Judge how extraordinary the moment is, with reasoning |
+| 3 | **Threshold gate** | Cheap filter: wake the scorer only when a derived column crosses a bound |
+| 4 | **Rule-based scoring** | Combine signals into a calibrated score via a fixed, deterministic formula |
 | 5 | **Decision** | Convert score to an action via a cost-based threshold |
 | 6 | **Delivery** | Package the decision and hand it to Prime Video's pipeline |
+| 7 | **Context layer (LLM)** | *Post-interaction only:* generate relevant context once a user engages with a notification |
+
+## Context layer (post-interaction LLM)
+
+The LLM's job is **enrichment, not decision-making**. It is invoked only *after* a viewer interacts with a notification Prime Instinct already decided to send on rule-based grounds. At that point it provides relevant, timely context to help the viewer understand what they're tapping into, for example:
+
+- *Why this matters:* a plain-language explanation of the upset in progress ("the smallest nation ever to reach the knockout stage is leading the defending champions").
+- *Who / what to know:* background on the teams, players, or stakes relevant to the live moment.
+- *What to watch for next:* the situation as it stands and what could happen if the run continues.
+
+Because this runs after the interaction, LLM latency and quality never gate the live notification, and a bad generation degrades the follow-on context, not the decision to interrupt. The scoring decision stays deterministic; the LLM only enriches the experience once the user has opted in by engaging.
 
 ## Data contracts
 
@@ -65,7 +83,7 @@ A fourth signal, **reverse line movement** (odds moving against the public, i.e.
   "traded_volume": 24500.0 }
 ```
 
-**Output: notification decision** (what the pipeline consumes)
+**Output: notification decision** (what the pipeline consumes; produced by the rule-based scorer)
 ```json
 { "match_id": "cv_arg_r32", "decision": "INTERRUPT",
   "score": 8.4, "confidence": 0.86,
@@ -75,9 +93,11 @@ A fourth signal, **reverse line movement** (odds moving against the public, i.e.
   "ts": "2026-06-10T14:32:08Z" }
 ```
 
+> `reasoning` here is a deterministic, templated trace of which signal rules fired, not LLM-generated text. LLM output belongs to the post-interaction context layer, which is produced on demand when a viewer engages.
+
 ## Evaluation
 
-The output is a **label + confidence score**, not free text, so grading is classifier-style (exact match in code), not LLM-as-judge. The hard part is getting ground truth at all: "extraordinary" is subjective and only resolves after the match. Evaluation runs on a three-rung ladder, cheapest first:
+The output is a **label + confidence score**, not free text, so grading is classifier-style (exact match in code), not LLM-as-judge. Since scoring itself is rule-based, there is no judge bias or judge drift in the decision path to begin with. The hard part is getting ground truth at all: "extraordinary" is subjective and only resolves after the match. Evaluation runs on a three-rung ladder, cheapest first:
 
 1. **Verification (code, now)** — unit tests prove the signal math is correct on synthetic inputs. Status: `test_signals.py` 10/10 passing. Verified, not yet validated against real outcomes.
 2. **Outcome-proxy metrics (offline)** — backtest the 2026 World Cup; label an event `INTERRUPT`-worthy if the improbable thing actually happened. Measure accuracy, precision, recall, F1, confusion matrix. **Headline metric: precision on `INTERRUPT`.**
@@ -90,7 +110,7 @@ Calibration (Expected Calibration Error, Brier score) sits across layers 2 and 3
 v1 uses two actions, not a graded set of tiers (every extra tier is another threshold to justify and calibrate).
 
 ```
-calibrated score ──▶  score > threshold T ?
+rule-based score ──▶  score > threshold T ?
                            │
                      yes ──┴── no
                       │         │
@@ -108,16 +128,16 @@ For a live notification, **late is worse than never.** Every external dependency
 | Odds feed drops mid-match | Reconciliation poll + replay cursor; second provider as fallback |
 | Duplicate messages | Idempotency key `(match_id, signal_type, time_bucket)`; dedup before emit |
 | Out-of-order messages | Keep message timestamp; ignore anything older than current state |
-| LLM latency spike | Hard timeout; if it misses the live window, drop rather than emit late |
-| Bad / hallucinated score | Deterministic gate pre-filter + eval harness; reason only from provided signals |
+| Bad score / mis-fire | Deterministic gate pre-filter + eval harness; scorer reasons only from provided signals |
+| Context-layer LLM latency or hallucination | Post-interaction only, so it never blocks the notification; on failure, fall back to the templated headline/context, decision is unaffected |
 | Training-serving skew | Single shared computation path for derived columns in backtest and live |
 
 ## Roadmap
 
-- **v1 (POC)** — one sport/event; improbability + velocity + volume; binary interrupt/don't; offline backtest as the eval; emit to a mock pipeline.
-- **v2** — add reverse line movement (needs a splits feed); calibration-gated autonomy; passive "surface quietly" tier; live online eval loop.
+- **v1 (POC)** — one sport/event; improbability + velocity + volume; rule-based scoring; binary interrupt/don't; post-interaction LLM context layer; offline backtest as the eval; emit to a mock pipeline.
+- **v2** — add reverse line movement (needs a splits feed); calibration-gated autonomy; passive "surface quietly" tier; live online eval loop; richer post-interaction context.
 - **Later** — extend the sport-agnostic framework to additional sports as data allows.
 
 ## Status
 
-Design-for-critique. Tech picks (odds provider, time-series store, threshold `T`, autonomy level) are presented as open decisions to challenge, not settled choices. Signal math is verified; outcome-proxy and engagement validation are pending.
+Design-for-critique. Tech picks (odds provider, time-series store, threshold `T`, autonomy level) are presented as open decisions to challenge, not settled choices. Scoring is rule-based and verified; the LLM is scoped to post-interaction context enrichment; outcome-proxy and engagement validation are pending.
