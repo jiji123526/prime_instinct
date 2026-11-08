@@ -435,3 +435,46 @@
     grid-column: 1 / -1;
   }
 }
+
+/* Amazon Echo typography principles: light sentence headlines, bold subheads,
+   restrained tracking, readable leading, and left-aligned explanatory copy. */
+body {
+  letter-spacing: 0;
+}
+
+h1,
+.header-tagline,
+.phone-column-head h2,
+.detail-content h2 {
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 1.33;
+}
+
+.header-tagline {
+  font-size: 16px;
+}
+
+.chart-topline h2,
+.phone-section h3,
+.signal-card-head,
+.decision-head {
+  font-weight: 700;
+}
+
+.chart-topline p,
+.game-subtitle,
+.signal-card p,
+.decision-card p,
+.detail-content > p,
+.copy-preview p {
+  max-width: 52ch;
+  text-align: left;
+  line-height: 1.33;
+  letter-spacing: 0;
+}
+
+.detail-content > p,
+.copy-preview p {
+  font-weight: 300;
+}
