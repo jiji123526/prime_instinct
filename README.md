@@ -19,13 +19,13 @@ Betting markets are a real-time, crowd-sourced probability sensor. When somethin
 ```
 External feeds                 This agent                           Downstream
 ───────────────                ──────────                           ──────────
-odds stream (WebSocket)  ──▶  ingest ─ store ─ gate ─ score ─ decide  ──▶  Prime Video
-                              (rule-based score → notify/don't + payload)   notification pipeline
+odds stream (WebSocket)  ──▶  ingest ─ store ─ gate ─ score ─ decide ─ copy  ──▶  Prime Video
+                              (rule-based decision)       (LLM)          notification pipeline
 ```
 
 The scoring path is **entirely rule-based**: deterministic signal math in the data layer, a cost-based threshold at the decision step. No LLM sits in the notify/don't decision, keeping it cheap, auditable, always-on, and free of judge bias or hallucination.
 
-The LLM is **not** part of the scoring decision. It runs **after** a user interacts with a notification, as a context layer that explains *why* the moment matters (see [Context layer](#context-layer-post-interaction-llm)).
+The LLM is **not** part of the scoring decision. It has two language-only jobs: after the rule-based decision is made, it turns the grounded decision record into notification copy before delivery; after a user interacts with that notification, it generates an on-demand explanation of *why* the moment matters (see [LLM language layer](#llm-language-layer)).
 
 ## Signals
 
@@ -47,6 +47,7 @@ Scoring is a **deterministic function of the signals**, not a learned or LLM jud
 
 - Scoring and decision are **100% rule-based** — no LLM in the notify/don't path.
 - Emits a **binary** decision: `INTERRUPT` / `DON'T`, plus a confidence score.
+- For `INTERRUPT`, an LLM generates the pre-send notification copy from the structured decision record.
 - Reads the **event, not the viewer**, there is no viewer profiling.
 - Prime Video's existing notification pipeline handles delivery and audience targeting; this agent does not own device delivery.
 
@@ -59,18 +60,22 @@ Scoring is a **deterministic function of the signals**, not a learned or LLM jud
 | 3 | **Threshold gate** | Cheap filter: wake the scorer only when a derived column crosses a bound |
 | 4 | **Rule-based scoring** | Combine signals into a calibrated score via a fixed, deterministic formula |
 | 5 | **Decision** | Convert score to an action via a cost-based threshold |
-| 6 | **Delivery** | Package the decision and hand it to Prime Video's pipeline |
-| 7 | **Context layer (LLM)** | *Post-interaction only:* generate relevant context once a user engages with a notification |
+| 6 | **Delivery copy (LLM)** | Turn an `INTERRUPT` decision record into grounded, human-readable notification copy, then hand it to Prime Video's pipeline |
+| 7 | **On-demand context (LLM)** | Generate relevant context once a user engages with a notification |
 
-## Context layer (post-interaction LLM)
+## LLM language layer
 
-The LLM's job is **enrichment, not decision-making**. It is invoked only *after* a viewer interacts with a notification Prime Instinct already decided to send on rule-based grounds. At that point it provides relevant, timely context to help the viewer understand what they're tapping into, for example:
+The LLM's job is **language and enrichment, not decision-making**. It is invoked only after Prime Instinct has already made an `INTERRUPT` decision on rule-based grounds.
+
+Before delivery, it converts the structured decision record into concise notification copy. The generation is grounded in the supplied teams, current state, signal values, and verified historical context; it must not introduce unsupported facts. If generation exceeds the live window or fails validation, the system drops the generated copy or falls back to a deterministic template rather than delaying the scoring decision.
+
+After a viewer taps the notification, the same language layer can provide relevant, timely context to help the viewer understand what they're tapping into, for example:
 
 - *Why this matters:* a plain-language explanation of the upset in progress ("the smallest nation ever to reach the knockout stage is leading the defending champions").
 - *Who / what to know:* background on the teams, players, or stakes relevant to the live moment.
 - *What to watch for next:* the situation as it stands and what could happen if the run continues.
 
-Because this runs after the interaction, LLM latency and quality never gate the live notification, and a bad generation degrades the follow-on context, not the decision to interrupt. The scoring decision stays deterministic; the LLM only enriches the experience once the user has opted in by engaging.
+The scoring decision remains deterministic in both cases. LLM latency can affect whether custom copy is ready in time for delivery, but it cannot change the numeric score or the `INTERRUPT` / `DON'T` result. Post-interaction generation is lower-stakes and runs only on demand.
 
 ## Data contracts
 
@@ -83,17 +88,17 @@ Because this runs after the interaction, LLM latency and quality never gate the 
   "traded_volume": 24500.0 }
 ```
 
-**Output: notification decision** (what the pipeline consumes; produced by the rule-based scorer)
+**Output: notification decision** (produced by the rule-based scorer and consumed by the copy/delivery layer)
 ```json
 { "match_id": "cv_arg_r32", "decision": "INTERRUPT",
   "score": 8.4, "confidence": 0.86,
   "signals_fired": ["improbability", "velocity"],
-  "reasoning": "Longshot (pop. 525K) collapsed Argentina's win odds mid-match; velocity in top percentile.",
-  "headline_hint": "Smallest nation in World Cup history is beating the champions, live now",
+  "signal_values": {"improbability": 7.2, "velocity_30s": 0.104,
+                    "volume_vs_baseline": 4.1},
   "ts": "2026-06-10T14:32:08Z" }
 ```
 
-> `reasoning` here is a deterministic, templated trace of which signal rules fired, not LLM-generated text. LLM output belongs to the post-interaction context layer, which is produced on demand when a viewer engages.
+The rule-based decision record is the source of truth. For an `INTERRUPT`, the delivery LLM turns this record plus verified event context into notification copy such as a headline and short body. Separately, the post-interaction agent produces a longer explanation on demand.
 
 ## Evaluation
 
@@ -129,15 +134,16 @@ For a live notification, **late is worse than never.** Every external dependency
 | Duplicate messages | Idempotency key `(match_id, signal_type, time_bucket)`; dedup before emit |
 | Out-of-order messages | Keep message timestamp; ignore anything older than current state |
 | Bad score / mis-fire | Deterministic gate pre-filter + eval harness; scorer reasons only from provided signals |
-| Context-layer LLM latency or hallucination | Post-interaction only, so it never blocks the notification; on failure, fall back to the templated headline/context, decision is unaffected |
+| Delivery-copy LLM latency or hallucination | Hard timeout + strict grounding in the decision record; fall back to deterministic copy or drop if the live window has passed; decision is unaffected |
+| On-demand context LLM latency or hallucination | Ground only in supplied event context; fall back to templated context; notification decision is unaffected |
 | Training-serving skew | Single shared computation path for derived columns in backtest and live |
 
 ## Roadmap
 
-- **v1 (POC)** — one sport/event; improbability + velocity + volume; rule-based scoring; binary interrupt/don't; post-interaction LLM context layer; offline backtest as the eval; emit to a mock pipeline.
+- **v1 (POC)** — one sport/event; improbability + velocity + volume; rule-based scoring; binary interrupt/don't; grounded LLM notification copy; on-demand post-interaction explanation; offline backtest as the eval; emit to a mock pipeline.
 - **v2** — add reverse line movement (needs a splits feed); calibration-gated autonomy; passive "surface quietly" tier; live online eval loop; richer post-interaction context.
 - **Later** — extend the sport-agnostic framework to additional sports as data allows.
 
 ## Status
 
-Design-for-critique. Tech picks (odds provider, time-series store, threshold `T`, autonomy level) are presented as open decisions to challenge, not settled choices. Scoring is rule-based and verified; the LLM is scoped to post-interaction context enrichment; outcome-proxy and engagement validation are pending.
+Design-for-critique. Tech picks (odds provider, time-series store, threshold `T`, autonomy level) are presented as open decisions to challenge, not settled choices. Scoring and the interrupt/don't decision are rule-based; the LLM is scoped to pre-send notification copy and post-interaction context enrichment. The signal math is verified on synthetic inputs, while real-data lead-time, outcome-proxy, and engagement validation are pending.

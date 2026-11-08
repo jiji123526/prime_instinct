@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#030912" />
+    <title>Prime Instinct — Live moment detected</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="alignment.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Prime Instinct home">
+          <span class="brand-mark">prime<span>instinct</span></span>
+          <span class="brand-arrow" aria-hidden="true"></span>
+        </a>
+        <div class="topbar-right">
+          <div class="header-pitch">
+            <p class="header-tagline">Don’t wait for viewing history to spot an extraordinary game.</p>
+            <small class="header-context">Testing whether live odds can surface it before it trends. <b>CORE HYPOTHESIS · NOT YET VALIDATED</b></small>
+          </div>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <section class="analytics-panel">
+          <div class="game-heading">
+            <div>
+              <div class="league-line">NBA <span>·</span> REGULAR SEASON <span class="separator">/</span> OCT 27, 2026</div>
+              <h1>Boston Celtics <span class="versus">vs</span> Brooklyn Nets</h1>
+              <p class="game-subtitle">TD Garden <span>·</span> 4th quarter <span class="blue-text">·</span> 00:42 remaining</p>
+            </div>
+            <div class="score-card"><span>BOS</span><strong>108 <b>—</b> 109</strong><span>BKN</span></div>
+          </div>
+
+          <div class="chart-card">
+            <div id="chartVisualization">
+            <div class="chart-topline">
+              <div>
+                <h2 id="chartTitle">Market signal vs. fan response</h2>
+                <p id="chartDescription">Compare the odds signal with the game-thread activity proxy.</p>
+              </div>
+              <span class="chart-data-badge"><i></i> PITCH DEMO · SAMPLE DATA</span>
+            </div>
+            <div class="legend">
+              <span id="legendPrimary"><i class="legend-odds"></i> IMPLIED WIN PROBABILITY <b>CELTICS</b></span>
+              <span id="legendSecondary"><i class="legend-social"></i> REDDIT GAME-THREAD ACTIVITY <b>COMMENTS / MIN</b></span>
+            </div>
+            <div class="chart-wrap">
+              <div class="chart-label label-odds">52%</div>
+              <div class="chart-label label-social" id="secondaryAxisLabel">1.2k</div>
+              <svg class="chart" viewBox="0 0 760 286" preserveAspectRatio="none" role="img" aria-label="Odds movement rises before game thread activity">
+                <defs>
+                  <linearGradient id="oddsFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#16a6ff" stop-opacity=".24"/><stop offset="1" stop-color="#16a6ff" stop-opacity="0"/></linearGradient>
+                  <linearGradient id="buzzFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#a2b4c9" stop-opacity=".14"/><stop offset="1" stop-color="#a2b4c9" stop-opacity="0"/></linearGradient>
+                  <clipPath id="chartRevealClip" class="chart-reveal-clip"><rect x="0" y="0" width="0" height="259"/></clipPath>
+                </defs>
+                <g class="grid-lines"><path d="M0 35H760M0 91H760M0 147H760M0 203H760M0 259H760"/><path d="M126 0V259M253 0V259M380 0V259M507 0V259M634 0V259"/></g>
+                <path class="buzz-area animated-area" d="M0 231 C80 229 105 222 150 224 S220 218 254 221 S320 207 380 210 S465 196 508 200 S575 179 634 180 S700 115 760 80 L760 259 L0 259Z"/>
+                <path class="odds-area animated-area" d="M0 221 C65 220 91 212 127 215 S210 209 253 211 S332 203 380 206 S448 193 507 195 S561 183 583 177 S610 134 634 105 S680 81 703 55 S738 39 760 30 L760 259 L0 259Z"/>
+                <g clip-path="url(#chartRevealClip)">
+                  <path class="buzz-line" d="M0 231 C80 229 105 222 150 224 S220 218 254 221 S320 207 380 210 S465 196 508 200 S575 179 634 180 S700 115 760 80"/>
+                  <path class="odds-line" d="M0 221 C65 220 91 212 127 215 S210 209 253 211 S332 203 380 206 S448 193 507 195 S561 183 583 177 S610 134 634 105 S680 81 703 55 S738 39 760 30"/>
+                </g>
+                <g class="chart-marker" id="chartMarker"><line x1="475" y1="0" x2="475" y2="259"/><circle cx="475" cy="198" r="5"/><rect x="419" y="8" width="112" height="26" rx="13"/><text x="475" y="25" text-anchor="middle">ODDS SIGNAL</text></g>
+                <g class="social-marker" id="socialMarker"><line x1="760" y1="0" x2="760" y2="259"/><circle cx="760" cy="80" r="4"/><rect x="633" y="38" width="120" height="24" rx="12"/><text x="693" y="54" text-anchor="middle">FAN ACTIVITY SPIKE</text></g>
+                <g class="chart-axis"><text x="0" y="280">10:32 PM</text><text x="190" y="280">10:34</text><text x="378" y="280">10:36</text><text x="568" y="280">10:38</text><text x="760" y="280" text-anchor="end">10:40 PM</text></g>
+              </svg>
+            </div>
+            <div class="timeline-control">
+              <button class="play-button" id="playButton" aria-label="Play demo">
+                <span id="playIcon" class="play-control-icon" aria-hidden="true">
+                  <span class="play-glyph"></span>
+                  <span class="pause-glyph"><i></i><i></i></span>
+                  <img class="replay-glyph" src="public/icons/replay.svg" alt="" />
+                </span>
+              </button>
+              <div class="timeline-track"><div class="timeline-progress" id="timelineProgress"></div><input id="timelineSlider" type="range" min="0" max="100" value="0" aria-label="Demo timeline" /></div>
+              <span class="time-readout" id="timeReadout">10:32 PM</span>
+            </div>
+            </div>
+            <section class="signal-details" id="signalDetails" aria-live="polite" hidden>
+              <div class="signal-detail-top">
+                <span class="eyebrow">SIGNAL DETAIL <i> / </i> <b id="signalDetailEyebrow">ODDS VELOCITY</b></span>
+                <button class="signal-details-close" id="signalDetailsClose" type="button"><span>←</span> BACK TO MARKET VIEW</button>
+              </div>
+              <div class="signal-detail-grid">
+                <div class="signal-detail-metric">
+                  <span class="signal-detail-label">CURRENT DEMO VALUE</span>
+                  <div class="signal-detail-value"><strong id="signalDetailValue"></strong><small id="signalDetailUnit"></small></div>
+                  <p id="signalDetailContext"></p>
+                </div>
+                <div class="signal-detail-copy">
+                  <span class="signal-detail-label">WHAT THIS SIGNAL MEANS</span>
+                  <h3 id="signalDetailTitle"></h3>
+                  <p id="signalDetailBody"></p>
+                  <div class="signal-detail-caveat"><b>DEMO NOTE</b><p id="signalDetailNote"></p></div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="signal-row">
+            <article class="signal-card interactive-signal" data-signal="velocity" role="button" tabindex="0" aria-expanded="false" aria-controls="signalDetails" aria-label="Explain why the odds movement makes this a timely moment">
+              <div class="signal-card-head"><span class="signal-icon">↗</span><span>WHY NOW</span><span class="status-tag" id="velocityStatus">WATCHING</span></div>
+              <div class="signal-value">0.104 <small>30s velocity</small></div>
+              <p><b>VELOCITY</b> · Short-window odds movement</p>
+            </article>
+            <article class="signal-card interactive-signal" data-signal="improbability" role="button" tabindex="0" aria-expanded="false" aria-controls="signalDetails" aria-label="Explain why this outcome is unusual">
+              <div class="signal-card-head"><span class="signal-icon star">✦</span><span>WHY UNLIKELY</span><span class="status-tag muted" id="improbabilityStatus">WATCHING</span></div>
+              <div class="signal-value">7.2 <small>signal value</small></div>
+              <p><b>IMPROBABILITY</b> · Starting chance <b>4.8% demo</b></p>
+            </article>
+            <article class="signal-card volume-card interactive-signal" data-signal="volume" role="button" tabindex="0" aria-expanded="false" aria-controls="signalDetails" aria-label="Explain market attention and the sample volume baseline">
+              <div class="signal-card-head"><span class="signal-icon">◌</span><span>MARKET ATTENTION</span><span class="status-tag muted">SAMPLE</span></div>
+              <div class="signal-value">4.1× <small>vs baseline</small></div>
+              <p><b>VOLUME ANOMALY</b> · Baseline method not validated</p>
+            </article>
+          </div>
+          <div class="decision-card">
+              <div class="decision-head"><span class="decision-icon">✦</span><span>PRIME INSTINCT DECISION</span></div>
+              <div class="decision-result">INTERRUPT <span>score 8.4 · confidence 0.86 (sample)</span></div>
+              <p>Rule-based demo decision. Signals fired: <b>Improbability + Velocity.</b> The LLM writes notification copy after this decision; it does not decide whether to interrupt.</p>
+              <div class="decision-foot"><span class="pulse"></span> SAMPLE DECISION · THRESHOLD + REAL-OUTCOME BACKTEST PENDING</div>
+          </div>
+          <footer class="footnote"><span>ⓘ</span> Illustrative data only. Fan activity is an evaluation proxy, not a betting signal; volume anomaly is sample data.</footer>
+        </section>
+
+        <aside class="phone-column">
+          <div class="phone-column-head"><div><div class="eyebrow">THE VIEWER EXPERIENCE</div><h2>From signal to screen.</h2></div></div>
+          <div class="phone-stage">
+            <div class="phone-glow"></div>
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <div class="phone-status"><span>9:41</span><span>●●●  ◖  ▰</span></div>
+                <div class="phone-header"><img src="public/figma/prime-video-logo.svg" alt="prime video"/><span class="phone-search">⌕</span><span class="cast-icon">▣</span><div class="profile-pic">J</div></div>
+                <div class="phone-tabs"><span class="selected">All</span><span>Movies</span><span>Series</span><span>Sports</span></div>
+                <div class="phone-hero"><img src="public/figma/hero.png" alt="My Fault featured title artwork"/><div class="hero-shade"></div><div class="hero-copy"><span class="hero-kicker">AMAZON ORIGINAL</span><strong>MY FAULT</strong><span class="included"><i>✓</i> Included with prime</span></div></div>
+                <div class="phone-dots"><i class="active"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="phone-section"><h3>Keep watching</h3><div class="poster-row"><img src="public/figma/recommended-1.png" alt="Recommended title artwork"/><img src="public/figma/recommended-2.png" alt="Recommended title artwork"/></div></div>
+                <div class="phone-section second-section"><h3><b>Prime</b> · Most viewed</h3><div class="poster-row"><img src="public/figma/top-1.png" alt="Popular title artwork"/><img src="public/figma/top-2.png" alt="Popular title artwork"/></div></div>
+                <nav class="phone-nav"><span><b>⌂</b>Home</span><span><b>▱</b>Store</span><span><b>▣</b>Live TV</span><span><b>⇩</b>Downloads</span></nav>
+                <button class="notification" id="notificationCard" type="button" aria-label="Open Celtics vs Nets live game">
+                  <div class="notification-top"><div class="notification-logo"><img src="public/figma/prime-video-logo.svg" alt=""/></div><span>now</span></div>
+                  <div class="notification-content"><div class="notification-app-icon"><img src="public/figma/prime-video-logo.svg" alt=""/></div><div><strong>The comeback is real.</strong><p>Boston just erased a 12-point deficit. One point game with 42 seconds left. Watch it live on Prime.</p></div></div>
+                </button>
+                <section class="game-detail" id="gameDetail" aria-label="Live game detail">
+                  <button class="detail-back" id="detailBack" type="button"><span>‹</span> Prime Video</button>
+                  <div class="detail-live-art"><span class="detail-live-badge"><i></i> LIVE NOW</span><div class="detail-score"><span>BOS</span><strong>108 <b>—</b> 109</strong><span>BKN</span></div><small>4TH · 00:42</small></div>
+                  <div class="detail-content"><span class="detail-eyebrow">NBA · EASTERN CONFERENCE</span><h2>One point. Forty-two seconds.</h2><p>Boston erased a 12-point deficit and has the ball with a chance to take the lead. The comeback is happening now.</p><div class="detail-odds"><span>CELTICS WIN PROBABILITY</span><strong>4.8% <i>→</i> 26.5%</strong></div><button class="watch-live" type="button"><span>▶</span> Watch live</button><small class="detail-note">You opened this from a Prime Instinct alert.</small></div>
+                </section>
+                <div class="home-indicator"></div>
+              </div>
+            </div>
+          </div>
+          <div class="copy-preview"><div class="copy-top"><span>✦ AI-GENERATED COPY</span><span class="copy-dot">GROUNDED IN GAME DATA</span></div><p>“Down 12 with four minutes left. Boston just pulled within one.”</p><small>Decision by rules · Copy by AI</small></div>
+        </aside>
+      </div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
