@@ -897,30 +897,6 @@ h1,
     padding-top: 16px;
   }
 
-  .phone-column {
-    display: flex;
-    margin-top: 28px;
-    padding: 24px 0 0;
-    border-top: 1px solid #172536;
-  }
-
-  .phone-column-head {
-    margin-bottom: 4px;
-  }
-
-  .phone-column-head h2 {
-    font-size: 18px;
-  }
-
-  .phone-stage {
-    min-height: 570px;
-  }
-
-  .phone-frame {
-    width: 258px;
-    height: 548px;
-  }
-
   .game-heading {
     margin: 8px 0 15px;
     gap: 12px;
@@ -978,15 +954,25 @@ h1,
 
   .mobile-live-alert {
     display: block;
-    margin-top: 18px;
+    height: 0;
+    margin: 0;
   }
 
-  /* Treat the mobile alert like an external system notification over the page. */
+  .mobile-alert-heading {
+    display: none;
+  }
+
+  /* Keep the notification external to the page flow without showing an extra section. */
   .mobile-alert-slot {
-    min-height: 68px;
+    height: 0;
+    min-height: 0;
     overflow: visible;
-    border-style: dashed;
+    border: 0;
     background: transparent;
+  }
+
+  .mobile-alert-placeholder {
+    display: none;
   }
 
   .mobile-notification-card {
@@ -997,6 +983,30 @@ h1,
     width: auto;
     min-height: 0;
     z-index: 100;
+  }
+
+  .phone-column {
+    display: flex;
+    margin-top: 28px;
+    padding: 24px 0 0;
+    border-top: 1px solid #172536;
+  }
+
+  .phone-column-head {
+    margin-bottom: 4px;
+  }
+
+  .phone-column-head h2 {
+    font-size: 18px;
+  }
+
+  .phone-stage {
+    min-height: 570px;
+  }
+
+  .phone-frame {
+    width: 258px;
+    height: 548px;
   }
 
   .signal-row {

@@ -31,6 +31,7 @@ const signalDetailsClose = document.querySelector('#signalDetailsClose');
 
 let timer;
 let selectedSignal = null;
+let mobileNotificationDismissed = false;
 const signalAt = 62.5;
 const totalDuration = 100;
 
@@ -48,10 +49,14 @@ function setMoment(value) {
   playIcon.classList.toggle('is-replay', atEnd);
   if (!timer) playButton.setAttribute('aria-label', atEnd ? 'Replay demo' : 'Play demo');
   const fired = moment >= signalAt;
+  if (!fired) mobileNotificationDismissed = false;
+  const mobileAlertVisible = fired && !mobileNotificationDismissed;
   notification.classList.toggle('show', fired);
-  mobileNotification.classList.toggle('show', fired);
-  mobileNotification.setAttribute('aria-hidden', String(!fired));
-  mobileAlertPlaceholder.classList.toggle('hidden', fired);
+  notification.setAttribute('aria-hidden', String(!fired));
+  mobileNotification.hidden = !mobileAlertVisible;
+  mobileNotification.classList.toggle('show', mobileAlertVisible);
+  mobileNotification.setAttribute('aria-hidden', String(!mobileAlertVisible));
+  mobileAlertPlaceholder.classList.toggle('hidden', mobileAlertVisible);
   if (!fired) closeGameDetail();
   phoneScreen.classList.toggle('notification-visible', fired);
   marker.classList.toggle('fired', fired);
@@ -97,6 +102,7 @@ const signalExplanations = {
 };
 
 function selectSignal(signal) {
+  closeMobileGameDetail();
   selectedSignal = selectedSignal === signal ? null : signal;
   const explanation = selectedSignal ? signalExplanations[selectedSignal] : null;
   chartVisualization.hidden = Boolean(explanation);
@@ -125,13 +131,21 @@ function openGameDetail() {
 }
 
 function openMobileGameDetail() {
-  if (!mobileNotification.classList.contains('show')) return;
+  if (mobileNotification.hidden || !mobileNotification.classList.contains('show')) return;
+  mobileNotificationDismissed = true;
+  mobileNotification.hidden = true;
+  mobileNotification.classList.remove('show');
+  mobileNotification.setAttribute('aria-hidden', 'true');
+  selectedSignal = null;
+  signalDetails.hidden = true;
+  signalCards.forEach((card) => {
+    card.classList.remove('selected');
+    card.setAttribute('aria-expanded', 'false');
+  });
   mobileGameInfo.hidden = false;
   mobileGameInfo.setAttribute('aria-hidden', 'false');
   chartVisualization.hidden = true;
   signalDetails.hidden = true;
-  mobileNotification.classList.remove('show');
-  mobileNotification.setAttribute('aria-hidden', 'true');
   mobileAlertPlaceholder.classList.add('hidden');
 }
 
