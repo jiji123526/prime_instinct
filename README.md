@@ -63,6 +63,15 @@ Scoring is a **deterministic function of the signals**, not a learned or LLM jud
 | 6 | **Delivery copy (LLM)** | Turn an `INTERRUPT` decision record into grounded, human-readable notification copy, then hand it to Prime Video's pipeline |
 | 7 | **On-demand context (LLM)** | Generate relevant context once a user engages with a notification |
 
+## Project structure
+
+```text
+demo/       Browser demo and its styles/scripts
+analysis/   Signal prototypes, backtest, and tests
+docs/       Technical review and design notes
+public/     Demo images and icons
+```
+
 ## LLM language layer
 
 The LLM's job is **language and enrichment, not decision-making**. It is invoked only after Prime Instinct has already made an `INTERRUPT` decision on rule-based grounds.
@@ -104,7 +113,7 @@ The rule-based decision record is the source of truth. For an `INTERRUPT`, the d
 
 The output is a **label + confidence score**, not free text, so grading is classifier-style (exact match in code), not LLM-as-judge. Since scoring itself is rule-based, there is no judge bias or judge drift in the decision path to begin with. The hard part is getting ground truth at all: "extraordinary" is subjective and only resolves after the match. Evaluation runs on a three-rung ladder, cheapest first:
 
-1. **Verification (code, now)** — unit tests prove the signal math is correct on synthetic inputs. Status: `test_signals.py` 10/10 passing. Verified, not yet validated against real outcomes.
+1. **Verification (code, now)** — unit tests prove the signal math is correct on synthetic inputs. Status: `analysis/test_signals.py` 10/10 passing. Verified, not yet validated against real outcomes.
 2. **Outcome-proxy metrics (offline)** — backtest the 2026 World Cup; label an event `INTERRUPT`-worthy if the improbable thing actually happened. Measure accuracy, precision, recall, F1, confusion matrix. **Headline metric: precision on `INTERRUPT`.**
 3. **Engagement (online, the real target)** — whether viewers who got the nudge actually engaged. Unavailable offline.
 
