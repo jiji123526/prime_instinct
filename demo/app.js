@@ -15,7 +15,6 @@ const signalCards = document.querySelectorAll('.signal-card');
 const chartVisualization = document.querySelector('#chartVisualization');
 const chartReveal = document.querySelector('#chartRevealClip rect');
 const chartAreas = document.querySelectorAll('.animated-area');
-const timelineDelta = document.querySelector('#timelineDelta');
 const signalDetails = document.querySelector('#signalDetails');
 const signalDetailEyebrow = document.querySelector('#signalDetailEyebrow');
 const signalDetailValue = document.querySelector('#signalDetailValue');
@@ -30,15 +29,6 @@ let timer;
 let selectedSignal = null;
 const signalAt = 62.5;
 const totalDuration = 100;
-const gameClockStartSeconds = 54;
-const gameClockEndSeconds = 42;
-
-function formatGameClock(seconds) {
-  const wholeSeconds = Math.max(0, Math.floor(seconds));
-  const minutes = Math.floor(wholeSeconds / 60);
-  const remainingSeconds = wholeSeconds % 60;
-  return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-}
 
 function setMoment(value) {
   const moment = Math.max(0, Math.min(100, Number(value)));
@@ -48,13 +38,12 @@ function setMoment(value) {
   chartAreas.forEach((area) => {
     area.style.clipPath = `inset(0 ${100 - moment}% 0 0)`;
   });
-  const fired = moment >= signalAt;
-  const gameClock = gameClockStartSeconds - ((gameClockStartSeconds - gameClockEndSeconds) * ratio);
-  readout.querySelector('b').textContent = `4Q · ${formatGameClock(gameClock)}`;
-  timelineDelta.textContent = fired ? 'ODDS LEAD · 04s' : 'LIVE WINDOW · 12s';
+  const minute = 32 + Math.floor(moment * 8 / 100);
+  readout.textContent = `10:${String(minute).padStart(2, '0')} PM`;
   const atEnd = moment >= totalDuration;
   playIcon.classList.toggle('is-replay', atEnd);
   if (!timer) playButton.setAttribute('aria-label', atEnd ? 'Replay demo' : 'Play demo');
+  const fired = moment >= signalAt;
   notification.classList.toggle('show', fired);
   if (!fired) closeGameDetail();
   phoneScreen.classList.toggle('notification-visible', fired);

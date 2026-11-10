@@ -42,7 +42,7 @@
             <div class="chart-topline">
               <div>
                 <h2 id="chartTitle">Market signal vs. fan response</h2>
-                <p id="chartDescription">A 12-second live window: market movement arrives before fan activity.</p>
+                <p id="chartDescription">Compare the odds signal with the game-thread activity proxy.</p>
               </div>
               <span class="chart-data-badge"><i></i> PITCH DEMO · SAMPLE DATA</span>
             </div>
@@ -60,7 +60,6 @@
                   <clipPath id="chartRevealClip" class="chart-reveal-clip"><rect x="0" y="0" width="0" height="259"/></clipPath>
                 </defs>
                 <g class="grid-lines"><path d="M0 35H760M0 91H760M0 147H760M0 203H760M0 259H760"/><path d="M126 0V259M253 0V259M380 0V259M507 0V259M634 0V259"/></g>
-                <g class="second-ticks" aria-hidden="true"><path d="M63 251V259M126 251V259M190 251V259M253 251V259M317 251V259M380 251V259M443 251V259M507 251V259M570 251V259M633 251V259M697 251V259"/></g>
                 <path class="buzz-area animated-area" d="M0 231 C80 229 105 222 150 224 S220 218 254 221 S320 207 380 210 S465 196 508 200 S575 179 634 180 S700 115 760 80 L760 259 L0 259Z"/>
                 <path class="odds-area animated-area" d="M0 221 C65 220 91 212 127 215 S210 209 253 211 S332 203 380 206 S448 193 507 195 S561 183 583 177 S610 134 634 105 S680 81 703 55 S738 39 760 30 L760 259 L0 259Z"/>
                 <g clip-path="url(#chartRevealClip)">
@@ -69,7 +68,7 @@
                 </g>
                 <g class="chart-marker" id="chartMarker"><line x1="475" y1="0" x2="475" y2="259"/><circle cx="475" cy="198" r="5"/><rect x="419" y="8" width="112" height="26" rx="13"/><text x="475" y="25" text-anchor="middle">ODDS SIGNAL</text></g>
                 <g class="social-marker" id="socialMarker"><line x1="760" y1="0" x2="760" y2="259"/><circle cx="760" cy="80" r="4"/><rect x="633" y="38" width="120" height="24" rx="12"/><text x="693" y="54" text-anchor="middle">FAN ACTIVITY SPIKE</text></g>
-                <g class="chart-axis"><text x="0" y="280">4Q 00:54</text><text x="190" y="280">4Q 00:51</text><text x="378" y="280">4Q 00:48</text><text x="568" y="280">4Q 00:45</text><text x="760" y="280" text-anchor="end">4Q 00:42</text></g>
+                <g class="chart-axis"><text x="0" y="280">10:32 PM</text><text x="190" y="280">10:34</text><text x="378" y="280">10:36</text><text x="568" y="280">10:38</text><text x="760" y="280" text-anchor="end">10:40 PM</text></g>
               </svg>
             </div>
             <div class="timeline-control">
@@ -81,7 +80,7 @@
                 </span>
               </button>
               <div class="timeline-track"><div class="timeline-progress" id="timelineProgress"></div><input id="timelineSlider" type="range" min="0" max="100" value="0" aria-label="Demo timeline" /></div>
-              <span class="time-readout" id="timeReadout"><b>4Q · 00:54</b><small id="timelineDelta">LIVE WINDOW · 12s</small></span>
+              <span class="time-readout" id="timeReadout">10:32 PM</span>
             </div>
             </div>
             <section class="signal-details" id="signalDetails" aria-live="polite" hidden>
