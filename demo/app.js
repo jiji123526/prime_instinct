@@ -15,6 +15,10 @@ const signalCards = document.querySelectorAll('.signal-card');
 const chartVisualization = document.querySelector('#chartVisualization');
 const chartReveal = document.querySelector('#chartRevealClip rect');
 const chartAreas = document.querySelectorAll('.animated-area');
+const mobileNotification = document.querySelector('#mobileNotificationCard');
+const mobileAlertPlaceholder = document.querySelector('#mobileAlertPlaceholder');
+const mobileGameInfo = document.querySelector('#mobileGameInfo');
+const mobileGameInfoBack = document.querySelector('#mobileGameInfoBack');
 const signalDetails = document.querySelector('#signalDetails');
 const signalDetailEyebrow = document.querySelector('#signalDetailEyebrow');
 const signalDetailValue = document.querySelector('#signalDetailValue');
@@ -45,6 +49,9 @@ function setMoment(value) {
   if (!timer) playButton.setAttribute('aria-label', atEnd ? 'Replay demo' : 'Play demo');
   const fired = moment >= signalAt;
   notification.classList.toggle('show', fired);
+  mobileNotification.classList.toggle('show', fired);
+  mobileNotification.setAttribute('aria-hidden', String(!fired));
+  mobileAlertPlaceholder.classList.toggle('hidden', fired);
   if (!fired) closeGameDetail();
   phoneScreen.classList.toggle('notification-visible', fired);
   marker.classList.toggle('fired', fired);
@@ -117,10 +124,28 @@ function openGameDetail() {
   phoneScreen.classList.add('detail-open');
 }
 
+function openMobileGameDetail() {
+  if (!mobileNotification.classList.contains('show')) return;
+  mobileGameInfo.hidden = false;
+  mobileGameInfo.setAttribute('aria-hidden', 'false');
+  chartVisualization.hidden = true;
+  signalDetails.hidden = true;
+  mobileNotification.classList.remove('show');
+  mobileNotification.setAttribute('aria-hidden', 'true');
+  mobileAlertPlaceholder.classList.add('hidden');
+}
+
+function closeMobileGameDetail() {
+  mobileGameInfo.hidden = true;
+  mobileGameInfo.setAttribute('aria-hidden', 'true');
+  chartVisualization.hidden = false;
+}
+
 function closeGameDetail() {
   gameDetail.classList.remove('open');
   gameDetail.setAttribute('aria-hidden', 'true');
   phoneScreen.classList.remove('detail-open');
+  closeMobileGameDetail();
 }
 
 function pause() {
@@ -162,7 +187,9 @@ slider.addEventListener('input', () => {
   setMoment(slider.value);
 });
 notification.addEventListener('click', openGameDetail);
+mobileNotification.addEventListener('click', openMobileGameDetail);
 document.querySelector('#detailBack').addEventListener('click', closeGameDetail);
+mobileGameInfoBack.addEventListener('click', closeMobileGameDetail);
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeGameDetail();
 });

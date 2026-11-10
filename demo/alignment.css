@@ -218,6 +218,17 @@
   font-weight: 600;
 }
 
+/* Prime Video-style system alert: enter from above the phone viewport. */
+.notification {
+  transform: translate3d(0, calc(-100% - 14px), 0);
+  transition: transform .72s cubic-bezier(.2, .86, .24, 1), opacity .35s ease;
+  will-change: transform, opacity;
+}
+
+.notification.show {
+  transform: translate3d(0, 0, 0);
+}
+
 
 .signal-details-close {
   display: flex;
@@ -478,4 +489,541 @@ h1,
 .detail-content > p,
 .copy-preview p {
   font-weight: 300;
+}
+
+.mobile-live-alert {
+  display: none;
+}
+
+.mobile-alert-heading,
+.mobile-notification-top,
+.mobile-notification-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-alert-heading {
+  margin-bottom: 10px;
+}
+
+.mobile-alert-heading h2 {
+  margin: 6px 0 0;
+  color: #f2f7fb;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: -.4px;
+}
+
+.mobile-live-status {
+  color: #69d7bd;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: .9px;
+}
+
+.mobile-live-status i,
+.mobile-placeholder-pulse {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: #35d5ac;
+  box-shadow: 0 0 9px #35d5ac;
+}
+
+.mobile-alert-slot {
+  position: relative;
+  min-height: 116px;
+  overflow: hidden;
+  border: 1px solid #1b3850;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #081a2a, #06111c);
+}
+
+.mobile-alert-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71869a;
+  font-size: 9px;
+  letter-spacing: .2px;
+  transition: opacity .25s ease;
+}
+
+.mobile-alert-placeholder.hidden {
+  opacity: 0;
+}
+
+.mobile-notification-card {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  min-height: 116px;
+  padding: 12px 13px 10px;
+  border: 0;
+  border-radius: 13px;
+  color: #f5f8ff;
+  background: var(--notify-glass);
+  box-shadow: 0 10px 28px #0008;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transform: translate3d(0, calc(-100% - 14px), 0);
+  transition: transform .72s cubic-bezier(.2, .86, .24, 1), opacity .35s ease;
+  will-change: transform, opacity;
+}
+
+.mobile-notification-card.show {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.mobile-notification-card:focus-visible {
+  outline: 2px solid #7ed3ff;
+  outline-offset: -3px;
+}
+
+.mobile-notification-top {
+  color: #bdcbe0;
+  font-size: 7px;
+}
+
+.mobile-notification-top .notification-logo img {
+  display: block;
+  width: 61px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+.mobile-notification-content {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 8px;
+}
+
+.mobile-notification-content .notification-app-icon {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #09295c, #087fca);
+  box-shadow: inset 0 0 0 1px #ffffff24;
+  flex: none;
+}
+
+.mobile-notification-content .notification-app-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.mobile-notification-content > div:last-child {
+  min-width: 0;
+}
+
+.mobile-notification-content strong {
+  display: block;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.mobile-notification-content p {
+  margin: 3px 0 0;
+  color: #e1e9f5;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.mobile-notification-footer {
+  margin-top: 9px;
+  padding-top: 7px;
+  border-top: 1px solid #ffffff1c;
+  color: #90a5b8;
+  font-size: 7px;
+}
+
+.mobile-notification-footer b {
+  color: #67c9f5;
+  font-size: 7px;
+  letter-spacing: .45px;
+}
+
+.mobile-game-info[hidden] {
+  display: none;
+}
+
+.mobile-game-info {
+  overflow: hidden;
+  border: 1px solid #15517b;
+  border-radius: 12px;
+  background: #06131f;
+  animation: detail-in .22s ease-out;
+}
+
+.mobile-game-info-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 14px 11px;
+  border-bottom: 1px solid #1b3044;
+}
+
+.mobile-game-info-back {
+  padding: 6px 0;
+  border: 0;
+  color: #79c8f5;
+  background: transparent;
+  font: 500 7px 'Sora';
+  letter-spacing: .3px;
+  cursor: pointer;
+}
+
+.mobile-game-info-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 18px 12px;
+  background: radial-gradient(ellipse at 50% 100%, #0e69a0 0, #092443 35%, #030912 78%);
+  border-bottom: 1px solid #15334d;
+}
+
+.mobile-game-info-score > span {
+  color: #c2d6e8;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.mobile-game-info-score > span i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: #ff4d5d;
+  box-shadow: 0 0 8px #ff4d5d;
+}
+
+.mobile-game-info-score strong {
+  color: #fff;
+  font-size: 24px;
+  white-space: nowrap;
+}
+
+.mobile-game-info-score strong b {
+  margin: 0 5px;
+  color: #91a8bc;
+  font-size: 8px;
+  letter-spacing: 1px;
+  vertical-align: middle;
+}
+
+.mobile-game-info-score strong em {
+  margin: 0 7px;
+  color: #667a8f;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.mobile-game-info-score small {
+  color: #94a9bd;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.mobile-game-info-copy {
+  padding: 15px 14px 16px;
+}
+
+.mobile-game-detail {
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  border: 1px solid #15517b;
+  border-radius: 14px;
+  background: #06131f;
+  opacity: 0;
+  transition: max-height .4s ease, margin-top .3s ease, opacity .25s ease;
+}
+
+.mobile-game-detail.open {
+  max-height: 470px;
+  margin-top: 12px;
+  opacity: 1;
+}
+
+.mobile-detail-back {
+  margin: 12px 13px 0;
+  padding: 0;
+  border: 0;
+  color: #79c8f5;
+  background: transparent;
+  font: 500 8px 'Sora';
+  cursor: pointer;
+}
+
+.mobile-detail-live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 16px 12px;
+  background: radial-gradient(ellipse at 50% 100%, #0e69a0 0, #092443 35%, #030912 78%);
+  border-bottom: 1px solid #15334d;
+}
+
+.mobile-detail-live span {
+  color: #c2d6e8;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.mobile-detail-live span i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: #ff4d5d;
+  box-shadow: 0 0 8px #ff4d5d;
+}
+
+.mobile-detail-live strong {
+  font-size: 24px;
+}
+
+.mobile-detail-live strong b {
+  color: #667a8f;
+  font-weight: 400;
+}
+
+.mobile-detail-live small {
+  color: #94a9bd;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.mobile-detail-copy {
+  padding: 15px 14px 16px;
+}
+
+.mobile-detail-eyebrow {
+  color: #52baff;
+  font-size: 7px;
+  letter-spacing: 1.2px;
+}
+
+.mobile-detail-copy h3 {
+  margin: 8px 0;
+  color: #f5f8fc;
+  font-size: 19px;
+  font-weight: 300;
+  letter-spacing: -.5px;
+}
+
+.mobile-detail-copy p {
+  margin: 0;
+  color: #b5c4d3;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.mobile-detail-odds {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 13px;
+  padding: 10px;
+  border: 1px solid #1a354c;
+  border-radius: 8px;
+  background: #081626;
+}
+
+.mobile-detail-odds span {
+  color: #8399ad;
+  font-size: 6px;
+  letter-spacing: .8px;
+}
+
+.mobile-detail-odds strong {
+  font-size: 13px;
+}
+
+.mobile-detail-odds i {
+  margin: 0 5px;
+  color: #1ba7f6;
+  font-style: normal;
+}
+
+.mobile-watch-live {
+  width: 100%;
+  height: 36px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 6px;
+  color: #001323;
+  background: #139fe9;
+  font: 600 9px 'Sora';
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    padding: 0 12px 24px;
+  }
+
+  .topbar {
+    height: 64px;
+  }
+
+  .header-pitch {
+    display: none;
+  }
+
+  .workspace {
+    display: block;
+    padding-top: 16px;
+  }
+
+  .phone-column {
+    display: flex;
+    margin-top: 28px;
+    padding: 24px 0 0;
+    border-top: 1px solid #172536;
+  }
+
+  .phone-column-head {
+    margin-bottom: 4px;
+  }
+
+  .phone-column-head h2 {
+    font-size: 18px;
+  }
+
+  .phone-stage {
+    min-height: 570px;
+  }
+
+  .phone-frame {
+    width: 258px;
+    height: 548px;
+  }
+
+  .game-heading {
+    margin: 8px 0 15px;
+    gap: 12px;
+  }
+
+  h1 {
+    font-size: 21px;
+  }
+
+  .score-card {
+    align-self: flex-end;
+    min-width: 165px;
+    padding: 10px 12px;
+  }
+
+  .chart-card {
+    padding: 15px 12px 13px;
+    border-radius: 16px;
+  }
+
+  .chart-topline {
+    gap: 9px;
+  }
+
+  .chart-topline h2 {
+    font-size: 14px;
+  }
+
+  .chart-topline p {
+    font-size: 9px;
+  }
+
+  .chart-data-badge {
+    align-self: flex-start;
+    font-size: 6px;
+  }
+
+  .legend {
+    gap: 8px 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .legend span {
+    font-size: 7px;
+  }
+
+  .chart-wrap {
+    height: 190px;
+  }
+
+  .chart-axis {
+    font-size: 7px;
+  }
+
+  .mobile-live-alert {
+    display: block;
+    margin-top: 18px;
+  }
+
+  /* Treat the mobile alert like an external system notification over the page. */
+  .mobile-alert-slot {
+    min-height: 68px;
+    overflow: visible;
+    border-style: dashed;
+    background: transparent;
+  }
+
+  .mobile-notification-card {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    right: 12px;
+    left: 12px;
+    width: auto;
+    min-height: 0;
+    z-index: 100;
+  }
+
+  .signal-row {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 18px;
+  }
+
+  .decision-card {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-card p,
+  .decision-foot {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .signal-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-alert-heading h2 {
+    font-size: 16px;
+  }
+
+  .mobile-notification-content p {
+    max-width: 28ch;
+  }
 }

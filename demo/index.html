@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=a978d26" />
-    <link rel="stylesheet" href="alignment.css?v=a978d26" />
+    <link rel="stylesheet" href="styles.css?v=a978d31" />
+    <link rel="stylesheet" href="alignment.css?v=a978d31" />
   </head>
   <body>
     <main class="app-shell">
@@ -102,7 +102,55 @@
                 </div>
               </div>
             </section>
+            <section class="mobile-game-info" id="mobileGameInfo" aria-hidden="true" hidden>
+              <div class="mobile-game-info-top">
+                <span class="eyebrow">LIVE GAME DETAILS</span>
+                <button class="mobile-game-info-back" id="mobileGameInfoBack" type="button">← BACK TO GRAPH</button>
+              </div>
+              <div class="mobile-game-info-score">
+                <span><i></i> LIVE NOW</span>
+                <strong><b>BOS</b> 108 <em>—</em> 109 <b>BKN</b></strong>
+                <small>4TH · 00:42</small>
+              </div>
+              <div class="mobile-game-info-copy">
+                <span class="mobile-detail-eyebrow">NBA · EASTERN CONFERENCE</span>
+                <h3>One point. Forty-two seconds.</h3>
+                <p>Boston erased a 12-point deficit and has the ball with a chance to take the lead.</p>
+                <div class="mobile-detail-odds"><span>CELTICS WIN PROBABILITY</span><strong>4.8% <i>→</i> 26.5%</strong></div>
+                <button class="mobile-watch-live" type="button">▶&nbsp; Watch live</button>
+              </div>
+            </section>
           </div>
+
+          <section class="mobile-live-alert" aria-label="Mobile notification demo">
+            <div class="mobile-alert-heading">
+              <div>
+                <span class="eyebrow">THE ALERT MOMENT</span>
+                <h2>Signal becomes notification.</h2>
+              </div>
+              <span class="mobile-live-status"><i></i> LIVE</span>
+            </div>
+            <div class="mobile-alert-slot" id="mobileAlertSlot">
+              <div class="mobile-alert-placeholder" id="mobileAlertPlaceholder">
+                <span class="mobile-placeholder-pulse"></span>
+                Waiting for the market signal
+              </div>
+              <button class="mobile-notification-card" id="mobileNotificationCard" type="button" aria-label="Open Celtics vs Nets live game" aria-hidden="true">
+                <div class="mobile-notification-top">
+                  <div class="notification-logo"><img src="../public/figma/prime-video-logo.svg" alt="" /></div>
+                  <span>now</span>
+                </div>
+                <div class="mobile-notification-content">
+                  <div class="notification-app-icon"><img src="../public/figma/prime-video-logo.svg" alt="" /></div>
+                  <div>
+                    <strong>The comeback is real.</strong>
+                    <p>Boston just erased a 12-point deficit. One point game with 42 seconds left.</p>
+                  </div>
+                </div>
+                <div class="mobile-notification-footer"><span>Prime Video</span><b>WATCH LIVE&nbsp; ›</b></div>
+              </button>
+            </div>
+          </section>
 
           <div class="signal-row">
             <article class="signal-card interactive-signal" data-signal="velocity" role="button" tabindex="0" aria-expanded="false" aria-controls="signalDetails" aria-label="Explain why the odds movement makes this a timely moment">
