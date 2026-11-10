@@ -29,8 +29,9 @@ jobs:
 
       - name: Prepare static site files
         run: |
-          mkdir _site
-          cp index.html styles.css alignment.css app.js _site/
+          mkdir -p _site
+          cp demo/index.html demo/styles.css demo/alignment.css demo/app.js _site/
+          sed -i 's#\.\./public/#public/#g' _site/index.html
           cp -R public _site/public
 
       - name: Upload site artifact
